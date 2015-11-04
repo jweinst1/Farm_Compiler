@@ -1,0 +1,178 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Farm compiler by jweinst1</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-dark.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/main.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  </head>
+  <body>
+
+      <header>
+        <h1>Farm compiler</h1>
+        <p>The Compiler package for the Farm Programming language</p>
+      </header>
+
+      <div id="banner">
+        <span id="logo"></span>
+
+        <a href="https://github.com/jweinst1/Farm_Compiler" class="button fork"><strong>View On GitHub</strong></a>
+        <div class="downloads">
+          <span>Downloads:</span>
+          <ul>
+            <li><a href="https://github.com/jweinst1/Farm_Compiler/zipball/master" class="button">ZIP</a></li>
+            <li><a href="https://github.com/jweinst1/Farm_Compiler/tarball/master" class="button">TAR</a></li>
+          </ul>
+        </div>
+      </div><!-- end banner -->
+
+    <div class="wrapper">
+      <nav>
+        <ul></ul>
+      </nav>
+      <section>
+        <h1>
+<a id="farm" class="anchor" href="#farm" aria-hidden="true"><span class="octicon octicon-link"></span></a>Farm</h1>
+
+<hr>
+
+<h2>
+<a id="introduction" class="anchor" href="#introduction" aria-hidden="true"><span class="octicon octicon-link"></span></a>Introduction</h2>
+
+<p><a href="http://farmlang.herokuapp.com/">Website</a></p>
+
+<p>The Farm language is a minimal syntax language that uses a series of commands to assemble patterns of characters to form an output. These commands, can also be looped. Overall, Farm only has 8 symbols it uses to compute everything!</p>
+
+<p>Farm can be considered a pseudo-low level language. The compiler is written in Python, so the output isn't truly close to machine language instruction, but the massive freedom in syntax and structure gives it the utility of a low level language.</p>
+
+<p>The language uses two containers, one for alphabet characters, the other for numeric and symbolic characters. There are two pointers, which can reference values from these containers, which are 0 indexed. The alphabet container is intially set to <code>a</code>, while the num_sym(numerical and symbolic) container is set to <code>0</code>.</p>
+
+<h2>
+<a id="commands" class="anchor" href="#commands" aria-hidden="true"><span class="octicon octicon-link"></span></a>Commands</h2>
+
+<p>The command symbols in Farm have one of three roles:</p>
+
+<blockquote>
+<p>Move either of the pointers across the container:</p>
+</blockquote>
+
+<p>The <code>&lt;</code> and <code>&gt;</code> commands move the alphabet pointer back one index, or forward one index respectively. The <code>-</code> and <code>+</code> commands move the num_sym container back one index or forward one index, respectively.</p>
+
+<blockquote>
+<p>Add the current value the pointer is set on to the output expression:</p>
+</blockquote>
+
+<p>The <code>,</code> command prints out the value the alphabet pointer is set on. The <code>.</code> command prints out the value the num_sym pointer is currently set on.</p>
+
+<blockquote>
+<p>To loop back across previous commands:</p>
+</blockquote>
+
+<p>The <code>!x</code> command, where x is an integer between and including 1 to 9, repeats the previous x commands in the code. If a <code>!</code> is directly followed by anything except an integer 1-9, it will be ignored. You cannot repeat more than 9 previous commands. <code>!15</code> will only repeat one previous command, not 15.</p>
+
+<p>The <code>?xy</code> command, where both x and y are integers between and including 1 through 9, repeats the previous x commands in the code, in y cycles. This is essentially a very shorthand way of repeating the <code>!x</code> command over again several times. Similarly, if anything in the x or y position is not an integer 1-9, the <code>?</code> command is ignored.</p>
+
+<p>Additionally, anything not one of these command symbols is ignored by the compiler, and considered a comment, as Farm code can be easily annotated this way. This also gives the language very easily manipulatable syntax, as new lines or tabs do not affect the code.</p>
+
+<h4>
+<a id="infinite-lists" class="anchor" href="#infinite-lists" aria-hidden="true"><span class="octicon octicon-link"></span></a>Infinite Lists</h4>
+
+<p>The containers in Farm for both the alphabet and num_sym sets are housed in objects called infinite lists. Essentially, they prevent errors by always doing the following:</p>
+
+<ul>
+<li>If backward commands cause a negative index on the container, it simply returns the 0 index.</li>
+</ul>
+
+<pre><code>&gt;,&lt;&lt;&lt;,
+
+ba
+</code></pre>
+
+<p>Here, even though the 3 <code>&lt;</code> commands push the pointer to a -2 index, the compiler corrects that and resets the index to 0 again, printing the <code>a</code> character.</p>
+
+<ul>
+<li>If forward commands cause an index greater than the size of the list, the index is set to the remainder of the size of the list, so it restarts at the beginning again.</li>
+</ul>
+
+<pre><code>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;,&gt;,
+ab
+</code></pre>
+
+<p>In this Farm program, we input 26 forward commands on the alphabet pointer. Technically, the alphabet container ends at index 25 with the value <code>z</code>. However, if the index is greater, the index is divided by the length of the list, and the remainder of that is reset as the index, which puts it back at 0. This is particularly useful because if one wanted to print the word <code>pizza</code>, after printing z, one can just go one index forward to print the a, instead of going 25 commands back to print a.</p>
+
+<h2>
+<a id="examples" class="anchor" href="#examples" aria-hidden="true"><span class="octicon octicon-link"></span></a>Examples</h2>
+
+<p>Let's try printing a simple word, like <code>bat</code>:</p>
+
+<pre><code>&gt;,&lt;,&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;,
+bat
+</code></pre>
+
+<p>Now, that is an awful lot of forward commands we used. We can shorten those with looping commands:</p>
+
+<pre><code>&gt;,&lt;,&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;!9,
+bat
+</code></pre>
+
+<p>So we shortened our expression, but it's still a bit long and easy to lose track of how many commands there are. We can further shorten our expression by used the <code>?</code> loop.</p>
+
+<pre><code>&gt;,&lt;,&gt;&gt;&gt;?28,
+bat
+</code></pre>
+
+<p>Here, the <code>?</code> loop is used to repeat the expression <code>&gt;&gt;</code> 8 times, for a total of 16 <code>&gt;</code> commands. Let's try printing a number now, like 6500.</p>
+
+<pre><code>++++++.-.-----..
+6500
+</code></pre>
+
+<p>Just like before, we can shorten our expression with loops:</p>
+
+<pre><code>+?15.-.-?13..
+6500
+</code></pre>
+
+<p>Now, lets try assembling some code in a different programming language! In this example, the Farm program will print <code>var x = 5</code>. The program will be spaced out and annotated to make it more readable.</p>
+
+<pre><code>&gt;&gt;&gt;?29,&gt;?15,&lt;&lt;&lt;&lt;&lt;!5,++?24.&gt;&gt;&gt;!3,.+++++?37.-----?37.---!2.
+
+var x = 5
+
+</code></pre>
+
+<p><code>&gt;&gt;&gt;?29,</code> sets the alpha pointer at index 23, and prints v.</p>
+
+<p><code>&gt;?15,</code>sets the alpha pointer 6 indexes forward, and prints a into the expression.</p>
+
+<p><code>&lt;&lt;&lt;&lt;&lt;!5,</code> moves the alpha pointer back 10 indexes and prints r.</p>
+
+<p><code>++?24.</code> now, this expression moves the num_sym pointer 10 indexes up to print the white space character.</p>
+
+<p><code>&gt;&gt;&gt;!3,</code> moves the alpha pointer 6 spaces up to print x.</p>
+
+<p><code>.</code> simply prints another space character. No movements are neccesary since the pointer is already set on the space.</p>
+
+<p><code>+++++?37.</code> moves the num_sym pointer up many indexes to reach the equals character and prints it.</p>
+
+<p><code>-----?37.</code> moves the num_sym pointer backwards the same number of indexes to print another space character.</p>
+
+<p><code>--!2.</code> The final command prints a 5, and the program ends.</p>
+      </section>
+      <footer>
+        <p>Project maintained by <a href="https://github.com/jweinst1">jweinst1</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></small></p>
+      </footer>
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    
+  </body>
+</html>
