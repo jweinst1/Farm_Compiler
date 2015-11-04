@@ -4,10 +4,16 @@ setup(
   packages = ['farm'], # this must be the same as the name above
   version = '1.0.0',
   description = 'A compiler for the Farm programming language',
+  long_description='''
+  The Farm Compiler is written in python and has three main functions:
+  def compile_string(string): ~Takes a python string of Farm commands and compiles it.
+  def compile_file(name): ~Compiles a text file, or any file with farm commands in it.
+  def write_to_file(string, name): ~Takes a python string, compiles it, and writes the
+  resulting farm result to the name specified.''',
   author = 'Joshua Weinstein',
   author_email = 'jweinst1@berkeley.edu',
-  url = 'https://github.com/jweinst1/Tagineer', # use the URL to the github repo
-  download_url = 'https://github.com/jweinst1/Tagineer/tarball/0.1', # I'll explain this in a second
+  url = 'https://github.com/jweinst1/Farm_Compiler', # use the URL to the github repo
+  download_url = 'https://github.com/jweinst1/Farm_Compiler/tarball/0.1', # I'll explain this in a second
   keywords = ['compilers', 'programming', 'farm'], # arbitrary keywords
   classifiers = [],
 )
