@@ -1,7 +1,7 @@
 #Unit tests for Farm compiler
 
 import unittest
-from farm import *
+from farm_compiler import *
 
 
 class alphabet_testcase(unittest.TestCase):

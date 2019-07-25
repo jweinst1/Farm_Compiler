@@ -1,0 +1,1 @@
+web: gunicorn Farm_compiler:app --log-file=-
